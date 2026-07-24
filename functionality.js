@@ -1,9 +1,62 @@
 const fs=require("fs")
 const path=require("path")
-const fsPromise=fs.promises
 
-const deleteFilesAndFolders=(location)=>{
+const fsPromise=fs.promises
+const readline = require('node:readline/promises');
+const { stdin: input, stdout: output } = require('node:process');
+
+
+const deleteFilesAndFolders=async(location)=>{
     if(location==undefined){throw new Error("This is not expected .. We need the location argument")}
+
+    const rl=readline.createInterface({input,output})
+
+    const confirmation=await rl.question("Confirm Delete from this folder by entering 'DELETE' : ")
+    rl.close()
+    if (confirmation!="DELETE"){
+        console.log("Delete Aborted")
+        return;
+    }
+
+
+    fs.readdir(location,async(err,files)=>{
+        if(err){
+            throw new Error("Error in reading files")
+        }
+        //console.log(files)
+
+        // create folders
+        for (let i=0;i<files.length;i++){
+            
+            let file=files[i].split(".")
+
+            if(file.length==1){
+                try{
+                    await fsPromise.rm(path.join(location,files[i]),{recursive:true,force:true});
+                }
+                catch(err){
+                    throw new Error("Error in Delete folders")
+                }
+                continue;
+            }
+            
+            
+            //Deleting files
+            try{
+                await fsPromise.unlink(path.join(location,files[i]));
+            }
+            catch(err){
+                throw new Error("Error in File Deletion")
+            }
+
+        }
+
+        
+    })
+
+
+
+
     
 
 
@@ -17,14 +70,11 @@ const organizeFilesAndFolders=(location)=>{
             throw new Error("Error in reading files")
         }
         console.log(files)
-        const dirs=[]
-        const filesExtension=new Set()
 
         // create folders
         for (let i=0;i<files.length;i++){
             
             let file=files[i].split(".")
-            // console.log(file)
             if(file.length==1)continue;
             let extension=file.pop()
             let pathToCurrentDir=path.join(location,extension.toUpperCase()+"_ Folder")

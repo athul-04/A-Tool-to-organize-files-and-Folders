@@ -14,7 +14,7 @@ const {deleteFilesAndFolders,organizeFilesAndFolders}=require("./functionality")
 
 const functionality=process.argv[2]
 const location=process.argv[3]
-console.log(location)
+// console.log(location)
 
 switch(functionality.toLowerCase()){
     case "delete":
