@@ -9,8 +9,6 @@ const { stdin: input, stdout: output } = require('node:process');
 const deleteFilesAndFolders=async(location)=>{
     if(location==undefined){throw new Error("This is not expected .. We need the location argument")}
 
-
-
     const rl=readline.createInterface({input,output})
 
     const confirmation=await rl.question("Confirm Delete from this folder by entering 'DELETE' : ")
@@ -25,7 +23,7 @@ const deleteFilesAndFolders=async(location)=>{
         if(err){
             throw new Error("Error in reading files")
         }
-        console.log(files)
+        //console.log(files)
 
         // create folders
         for (let i=0;i<files.length;i++){
